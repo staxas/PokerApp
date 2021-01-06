@@ -1,0 +1,242 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+class HandScorer {
+
+    DeckOfCards deckOfCards = new DeckOfCards();
+    List<String> ranksList = Arrays.asList(deckOfCards.RANKS);
+    List<String> suitsList = Arrays.asList(deckOfCards.SUITS);
+
+    public List<Integer> calculateHand(String[][] cards) {
+        // Handscores:
+        // High card: 0
+        // 1 pair: 1
+        // 2 pair: 2
+        // Set: 3
+        // Straight: 4
+        // Flush: 5
+        // Full house: 6
+        // Quads: 7
+        // Straight flush: 8
+        // Royal flush: 9
+
+        int handScore = 0;
+        List<Integer> handValue = new ArrayList<>();
+
+        int cardLen = cards.length;
+        List<String[]> handSortedByRank = new ArrayList<>();
+
+        Integer[] nrsOfARank = new Integer[13];
+        Integer[] nrsOfASuit = new Integer[4];
+        Arrays.fill(nrsOfARank, 0);
+        Arrays.fill(nrsOfASuit, 0);
+
+        SortHand sortHand = new SortHand();
+        sortHand.quickSort(cards, 0, cards.length - 1);
+
+        // Find number of cards of each suite
+        for (String[] card : cards) {
+            if (suitsList.contains(card[1])) {
+                nrsOfASuit[suitsList.indexOf(card[1])]++;
+            }
+        }
+
+        // Find numbers of cards of each rank
+        for (String[] card : cards) {
+            if (ranksList.contains(card[0])) {
+                nrsOfARank[ranksList.indexOf(card[0])]++;
+            }
+        }
+
+        // Convert to lists to make searchable
+        List<Integer> nrsOfASuitList = Arrays.asList(nrsOfASuit);
+        List<Integer> nrsOfARankList = Arrays.asList(nrsOfARank);
+
+        // Check for pair(s), sets and full houses
+        List<Integer> pairCards = new ArrayList<>();
+        List<Integer> setCards = new ArrayList<>();
+        int nrOfPairs = 0;
+        int nrOfSets = 0;
+        for (int i = 0; i < nrsOfARank.length; i++) {
+            if (nrsOfARank[i] == 2) {
+                nrOfPairs++;
+                pairCards.add(i);
+            }
+            if (nrsOfARank[i] == 3) {
+                nrOfSets++;
+                setCards.add(i);
+            }
+        }
+
+        Collections.sort(setCards, Collections.reverseOrder());
+        Collections.sort(pairCards, Collections.reverseOrder());
+
+        if (nrOfPairs == 1 && nrOfSets <= 0) {
+//        System.out.println("1 pair");
+            handScore = 1;
+            handValue.add(pairCards.get(0));
+            int j = 1;
+            for (int i = cardLen - 1; i >= 0; i--) {
+                if (handValue.get(0) != ranksList.indexOf(cards[i][0])) {
+                    handValue.add(ranksList.indexOf(cards[i][0]));
+                    j++;
+                }
+                if (j >= 4) {
+                    break;
+                }
+            }
+        }
+        if (nrOfPairs >= 2 && nrOfSets <= 0) {
+//        System.out.println("2 pair");
+            handScore = 2;
+            handValue.add(pairCards.get(0));
+            handValue.add(pairCards.get(1));
+            int j = 0;
+            for (int i = cardLen - 1; i >= 0; i--) {
+                if (handValue.get(0) != ranksList.indexOf(cards[i][0]) && handValue.get(1) != ranksList.indexOf(cards[i][0])) {
+                    handValue.add(ranksList.indexOf(cards[i][0]));
+                    j++;
+                }
+                if (j >= 1) {
+                    break;
+                }
+
+            }
+        }
+
+        if (nrOfSets == 1 && nrOfPairs == 0) {
+//        System.out.println("Set");
+            handScore = 3;
+            handValue.add(setCards.get(0));
+            int j = 0;
+            for (int i = cardLen - 1; i >= 0; i--) {
+                if (setCards.get(0) != ranksList.indexOf(cards[i][0])) {
+                    handValue.add(ranksList.indexOf(cards[i][0]));
+                    j++;
+                }
+                if (j >= 2) {
+                    break;
+                }
+
+            }
+        }
+
+        if (nrOfSets == 1 && nrOfPairs == 1) {
+//        System.out.println("Full House");
+            handScore = 6;
+            handValue.add(setCards.get(0));
+            handValue.add(pairCards.get(0));
+        }
+        if (nrOfSets == 2) {
+//        System.out.println("Full House");
+            handScore = 6;
+            Collections.sort(setCards, Collections.reverseOrder());
+            handValue.add(setCards.get(0));
+            handValue.add(setCards.get(1));
+        }
+
+        // Check for quads
+        if (nrsOfARankList.contains(4)) {
+//      System.out.println("Quads");
+            handScore = 7;
+            int j = 0;
+            for (int i = cardLen - 1; i >= 0; i--) {
+                if (handValue.get(0) != ranksList.indexOf(cards[i]) && handValue.get(1) != ranksList.indexOf(cards[i])) {
+                    handValue.add(ranksList.indexOf(cards[i]));
+                    j++;
+                }
+                if (j >= 1) {
+                    break;
+                }
+
+            }
+        }
+
+        String[] lastCard = cards[0];
+        int cardIter = 1;
+        int startingIndex = 1;
+        // If there is an ace in the hand, start straight search on that card
+        if (cards[cards.length - 1][0].equals(ranksList.get(ranksList.size() - 1))) {
+            lastCard = cards[cards.length - 1];
+            startingIndex = 0;
+        }
+
+        // Start the search
+        for (int i = startingIndex; i < cards.length; i++) {
+            if (ranksList.indexOf(cards[i][0]) == (ranksList.indexOf(lastCard[0]) + 1)) {
+                cardIter++;
+            }
+            // of the previous card is not the same as the current card, and no iterating card is found, reset counter
+            if (ranksList.indexOf(cards[i][0]) != (ranksList.indexOf(lastCard[0])) && ranksList.indexOf(cards[i][0]) != (ranksList.indexOf(lastCard[0]) + 1)) {
+                cardIter = 0;
+            }
+
+            // If five or more consecutive cards have been found
+            if (cardIter >= 5) {
+                handValue = new ArrayList<>();
+                // If last card was an ace, and there are 5 suited cards the hand is a royal flush
+                if (nrsOfASuitList.contains(5) || nrsOfASuitList.contains(6) || nrsOfASuitList.contains(7)) {
+                    if (ranksList.indexOf(cards[i][0]) == 12) {
+//                        System.out.println("Royal Flush");
+                        handScore = 9;
+                    } else {
+//                        System.out.println("Straight Flush");
+                        handScore = 8;
+                        handValue=getFlushHighCards(nrsOfASuitList, cards);
+                    }
+                } else {
+//                    System.out.println("Straight");
+                    handScore = 4;
+                    if (handValue.isEmpty()) {
+                        handValue.add(ranksList.indexOf(cards[i][0]));
+                    } else {
+                        handValue.set(0, ranksList.indexOf(cards[i][0]));
+                    }
+                }
+            } else {
+                if (cardIter <= 4 && (nrsOfASuitList.contains(5) || nrsOfASuitList.contains(6) || nrsOfASuitList.contains(7))) {
+//                    System.out.println("Flush");
+                    handScore = 5;
+                    handValue=getFlushHighCards(nrsOfASuitList, cards);
+                }
+            }
+            lastCard = cards[i];
+        }
+
+        // In case no hands are made, the five highest cards make up the hand
+        if (handScore == 0) {
+            for (int i = cardLen - 1; i >= cardLen - 5; i--) {
+                handValue.add(ranksList.indexOf(cards[i][0]));
+            }
+        }
+
+        handValue.add(0, handScore);
+
+        return handValue;
+    }
+    private List<Integer> getFlushHighCards(List<Integer> nrsOfASuitList, String[][] cards) {
+        List<Integer> handValue = new ArrayList<>();
+        cards=reverseArray(cards);
+        int suitOfFlush=-1;
+        for(int j=5; j<7;j++) {
+            if (nrsOfASuitList.contains(j)){
+                suitOfFlush=nrsOfASuitList.indexOf(j);
+            }
+        }
+        for(String[] card : cards) {
+            if(suitsList.indexOf(card[1]) == suitOfFlush ) {
+                handValue.add(ranksList.indexOf(card[0]));
+            }
+        }
+        return handValue;
+    }
+    public String[][] reverseArray(String[][] array) {
+        String[][] newArray = new String[array.length][array[0].length];
+        for(int i=0; i<array.length; i++) {
+            newArray[array.length-1-i]=array[i];
+        }
+        return newArray;
+    }
+}
