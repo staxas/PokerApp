@@ -18,7 +18,7 @@ class PokerApp {
 //        }
 //        System.out.println();
 
-        int nrOfPlayers = 2;
+        int nrOfPlayers = 5;
         List<String[][]> playersHoleCards = new ArrayList<>();
         List<String[][]> playersHands = new ArrayList<>();
 
@@ -29,7 +29,7 @@ class PokerApp {
 
             String[][] playerHoleCards = new String[2][2];
 
-            System.out.println("Player " + j + ": ");
+            System.out.print("Player " + j + ": ");
             for (int i = 0; i < playerHoleCards.length; i++) {
                 playerHoleCards[i] = deck.remove(0);
                 System.out.print(PrintColored.printCardColors(playerHoleCards[i]) + " ");
@@ -72,5 +72,7 @@ class PokerApp {
             }
             System.out.println();
         }
+        HandComparer handComparer = new HandComparer();
+        handComparer.compareHands(playersHands);
     }
 }

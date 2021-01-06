@@ -33,8 +33,8 @@ class HandScorer {
         Arrays.fill(nrsOfARank, 0);
         Arrays.fill(nrsOfASuit, 0);
 
-        SortHand sortHand = new SortHand();
-        sortHand.quickSort(cards, 0, cards.length - 1);
+        SortTwoDimensionalArray sortTwoDimensionalArray = new SortTwoDimensionalArray();
+        sortTwoDimensionalArray.quickSortCards(cards, 0, cards.length - 1);
 
         // Find number of cards of each suite
         for (String[] card : cards) {
@@ -216,6 +216,7 @@ class HandScorer {
 
         return handValue;
     }
+
     private List<Integer> getFlushHighCards(List<Integer> nrsOfASuitList, String[][] cards) {
         List<Integer> handValue = new ArrayList<>();
         cards=reverseArray(cards);
