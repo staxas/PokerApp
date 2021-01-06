@@ -154,8 +154,15 @@ class HandScorer {
             }
         }
 
+        if (nrsOfASuitList.contains(5) || nrsOfASuitList.contains(6) || nrsOfASuitList.contains(7)) {
+            // Flush
+            handScore = 5;
+            handValue = getFlushHighCards(nrsOfASuitList, cards);
+        }
+
         String[] lastCard = cards[0];
         int cardIter = 1;
+
         int startingIndex = 1;
         // If there is an ace in the hand, start straight search on that card
         if (cards[cards.length - 1][0].equals(ranksList.get(ranksList.size() - 1))) {
@@ -164,27 +171,37 @@ class HandScorer {
         }
 
         // Start the search
+        Integer[] suitsForStraightFlush = new Integer[4];
+        Arrays.fill(suitsForStraightFlush, 0);
+        suitsForStraightFlush[suitsList.indexOf(lastCard[1])]++;
+
         for (int i = startingIndex; i < cards.length; i++) {
 
             if (ranksList.indexOf(cards[i][0]) == (ranksList.indexOf(lastCard[0]) + 1)) {
                 cardIter++;
-            }
+                suitsForStraightFlush[suitsList.indexOf(cards[i][1])]++;
+             }
+            if (ranksList.indexOf(cards[i][0]) == (ranksList.indexOf(lastCard[0]))) {
+                suitsForStraightFlush[suitsList.indexOf(cards[i][1])]++;
+             }
             // of the previous card is not the same as the current card, and no iterating card is found, reset counter
             if (ranksList.indexOf(cards[i][0]) != (ranksList.indexOf(lastCard[0])) && ranksList.indexOf(cards[i][0]) != (ranksList.indexOf(lastCard[0]) + 1)) {
                 cardIter = 0;
             }
             // If five or more consecutive cards have been found
             if (cardIter >= 4) {
+
                 handValue = new ArrayList<>();
                 // If last card was an ace, and there are 5 suited cards the hand is a royal flush
-                if (nrsOfASuitList.contains(5) || nrsOfASuitList.contains(6) || nrsOfASuitList.contains(7)) {
+                if (Arrays.asList(suitsForStraightFlush).contains(5) || Arrays.asList(suitsForStraightFlush).contains(6) || Arrays.asList(suitsForStraightFlush).contains(7)) {
+
                     if (ranksList.indexOf(cards[i][0]) == 12) {
                         // Royal Flush
                         handScore = 9;
                     } else {
                         // Straight Flush
                         handScore = 8;
-                        handValue=getFlushHighCards(nrsOfASuitList, cards);
+                        handValue = getFlushHighCards(nrsOfASuitList, cards);
                     }
                 } else {
                     // Straight
@@ -194,12 +211,6 @@ class HandScorer {
                     } else {
                         handValue.set(0, ranksList.indexOf(cards[i][0]));
                     }
-                }
-            } else {
-                if (cardIter <= 4 && (nrsOfASuitList.contains(5) || nrsOfASuitList.contains(6) || nrsOfASuitList.contains(7))) {
-                    // Flush
-                    handScore = 5;
-                    handValue=getFlushHighCards(nrsOfASuitList, cards);
                 }
             }
             lastCard = cards[i];
@@ -220,24 +231,25 @@ class HandScorer {
 
     private List<Integer> getFlushHighCards(List<Integer> nrsOfASuitList, String[][] cards) {
         List<Integer> handValue = new ArrayList<>();
-        cards=reverseArray(cards);
-        int suitOfFlush=-1;
-        for(int j=5; j<7;j++) {
-            if (nrsOfASuitList.contains(j)){
-                suitOfFlush=nrsOfASuitList.indexOf(j);
+        cards = reverseArray(cards);
+        int suitOfFlush = -1;
+        for (int j = 5; j < 7; j++) {
+            if (nrsOfASuitList.contains(j)) {
+                suitOfFlush = nrsOfASuitList.indexOf(j);
             }
         }
-        for(String[] card : cards) {
-            if(suitsList.indexOf(card[1]) == suitOfFlush ) {
+        for (String[] card : cards) {
+            if (suitsList.indexOf(card[1]) == suitOfFlush) {
                 handValue.add(ranksList.indexOf(card[0]));
             }
         }
         return handValue;
     }
+
     public String[][] reverseArray(String[][] array) {
         String[][] newArray = new String[array.length][array[0].length];
-        for(int i=0; i<array.length; i++) {
-            newArray[array.length-1-i]=array[i];
+        for (int i = 0; i < array.length; i++) {
+            newArray[array.length - 1 - i] = array[i];
         }
         return newArray;
     }

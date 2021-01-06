@@ -13,6 +13,7 @@ class PokerApp {
         List<String[][]> playersHoleCards = new ArrayList<>();
         List<String[][]> playersHands = new ArrayList<>();
 
+        // Generate hands
         for (int j = 0; j < nrOfPlayers; j++) {
             String[][] playerHand = new String[7][2];
 
@@ -36,10 +37,10 @@ class PokerApp {
         }
         System.out.println();
 
-        for (int i = 0; i < nrOfPlayers; i++) {
+        for (String[][] playerHoleCards : playersHoleCards) {
             String[][] playerHand = new String[7][2];
-            for (int j = 0; j < playersHoleCards.get(i).length; j++) {
-                playerHand[j] = playersHoleCards.get(i)[j];
+            for (int j = 0; j < playerHoleCards.length; j++) {
+                playerHand[j] = playerHoleCards[j];
             }
             for (int j = 0; j < table.length; j++) {
                 playerHand[j + 2] = table[j];
