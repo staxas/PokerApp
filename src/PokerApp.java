@@ -2,27 +2,16 @@ import java.util.List;
 import java.util.ArrayList;
 
 class PokerApp {
-
-
+    static DeckOfCards deckOfCards = new DeckOfCards();
+    static HandScorer handScorer = new HandScorer();
+    static HandComparer handComparer = new HandComparer();
+    
     public static void main(String[] args) {
-        DeckOfCards deckOfCards = new DeckOfCards();
-        List<String[]> deck = deckOfCards.getShuffledDeck();
-//        List<String[]> fullDeck = deckOfCards.getDeckList();
-//        int x = 0;
-//        for (String[] card : fullDeck) {
-//            if (x % 13 == 0) {
-//                System.out.println();
-//            }
-//            System.out.print(x + ":" + card[0] + card[1] + " ");
-//            x++;
-//        }
-//        System.out.println();
 
+        List<String[]> deck = deckOfCards.getShuffledDeck();
         int nrOfPlayers = 5;
         List<String[][]> playersHoleCards = new ArrayList<>();
         List<String[][]> playersHands = new ArrayList<>();
-
-//        playersHands.add(new String[][]{fullDeck.get(33), fullDeck.get(34), fullDeck.get(45), fullDeck.get(47), fullDeck.get(48), fullDeck.get(23), fullDeck.get(24)});
 
         for (int j = 0; j < nrOfPlayers; j++) {
             String[][] playerHand = new String[7][2];
@@ -57,22 +46,31 @@ class PokerApp {
             }
             playersHands.add(playerHand);
         }
-//        for (String[] card : playersHands.get(0)) {
-//            System.out.print(PrintColored.printCardColors(card) + " ");
-//        }
 
-        HandScorer handScorer = new HandScorer();
-        for (int i = 0; i < nrOfPlayers; i++) {
+        List<List<Integer>> scores = new ArrayList<>();
+
+        for (String[][] hand : playersHands) {
+            List<Integer> score = handScorer.calculateHand(hand);
+            scores.add(score);
+        }
+
+        int i=0;
+        for(List<Integer> score : scores) {
             System.out.print("Player " + i + " score: ");
+            for (int singleScore : score) {
+                System.out.print(singleScore + " ");
+            }
+            System.out.println();
+            i++;
+        }
 
-            List<Integer> handScore = handScorer.calculateHand(playersHands.get(i));
-//        List<Integer> handScore = handScorer.calculateHand(playersHands.get(0));
-            for (int score : handScore) {
-                System.out.print(score + " ");
+        List<Integer[]> highScoreOrder = handComparer.compareHands(scores);
+
+        for (Integer[] highScores : highScoreOrder) {
+            for (Integer highScore : highScores) {
+                System.out.print(highScore + " ");
             }
             System.out.println();
         }
-        HandComparer handComparer = new HandComparer();
-        handComparer.compareHands(playersHands);
     }
 }

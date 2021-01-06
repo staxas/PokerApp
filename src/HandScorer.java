@@ -8,17 +8,18 @@ class HandScorer {
     DeckOfCards deckOfCards = new DeckOfCards();
     List<String> ranksList = Arrays.asList(deckOfCards.RANKS);
     List<String> suitsList = Arrays.asList(deckOfCards.SUITS);
+    SortTwoDimensionalArray sortTwoDimensionalArray = new SortTwoDimensionalArray();
 
     public List<Integer> calculateHand(String[][] cards) {
         // Handscores:
         // High card: 0
-        // 1 pair: 1
-        // 2 pair: 2
-        // Set: 3
+        // One pair: 1
+        // Two pair: 2
+        // Three Of A Kind: 3
         // Straight: 4
         // Flush: 5
         // Full house: 6
-        // Quads: 7
+        // Four Of A Kid: 7
         // Straight flush: 8
         // Royal flush: 9
 
@@ -33,7 +34,6 @@ class HandScorer {
         Arrays.fill(nrsOfARank, 0);
         Arrays.fill(nrsOfASuit, 0);
 
-        SortTwoDimensionalArray sortTwoDimensionalArray = new SortTwoDimensionalArray();
         sortTwoDimensionalArray.quickSortCards(cards, 0, cards.length - 1);
 
         // Find number of cards of each suite
@@ -54,7 +54,7 @@ class HandScorer {
         List<Integer> nrsOfASuitList = Arrays.asList(nrsOfASuit);
         List<Integer> nrsOfARankList = Arrays.asList(nrsOfARank);
 
-        // Check for pair(s), sets and full houses
+        // Pre-check for pair(s), sets and full houses
         List<Integer> pairCards = new ArrayList<>();
         List<Integer> setCards = new ArrayList<>();
         int nrOfPairs = 0;
@@ -74,7 +74,7 @@ class HandScorer {
         Collections.sort(pairCards, Collections.reverseOrder());
 
         if (nrOfPairs == 1 && nrOfSets <= 0) {
-//        System.out.println("1 pair");
+            // One Pair
             handScore = 1;
             handValue.add(pairCards.get(0));
             int j = 1;
@@ -89,7 +89,7 @@ class HandScorer {
             }
         }
         if (nrOfPairs >= 2 && nrOfSets <= 0) {
-//        System.out.println("2 pair");
+            // Two Pair
             handScore = 2;
             handValue.add(pairCards.get(0));
             handValue.add(pairCards.get(1));
@@ -107,7 +107,7 @@ class HandScorer {
         }
 
         if (nrOfSets == 1 && nrOfPairs == 0) {
-//        System.out.println("Set");
+            // Three Of A Kind
             handScore = 3;
             handValue.add(setCards.get(0));
             int j = 0;
@@ -124,13 +124,13 @@ class HandScorer {
         }
 
         if (nrOfSets == 1 && nrOfPairs == 1) {
-//        System.out.println("Full House");
+            // Full House
             handScore = 6;
             handValue.add(setCards.get(0));
             handValue.add(pairCards.get(0));
         }
         if (nrOfSets == 2) {
-//        System.out.println("Full House");
+            // Full House
             handScore = 6;
             Collections.sort(setCards, Collections.reverseOrder());
             handValue.add(setCards.get(0));
@@ -139,7 +139,7 @@ class HandScorer {
 
         // Check for quads
         if (nrsOfARankList.contains(4)) {
-//      System.out.println("Quads");
+            // Four Of A Kind
             handScore = 7;
             int j = 0;
             for (int i = cardLen - 1; i >= 0; i--) {
@@ -165,6 +165,7 @@ class HandScorer {
 
         // Start the search
         for (int i = startingIndex; i < cards.length; i++) {
+
             if (ranksList.indexOf(cards[i][0]) == (ranksList.indexOf(lastCard[0]) + 1)) {
                 cardIter++;
             }
@@ -172,22 +173,21 @@ class HandScorer {
             if (ranksList.indexOf(cards[i][0]) != (ranksList.indexOf(lastCard[0])) && ranksList.indexOf(cards[i][0]) != (ranksList.indexOf(lastCard[0]) + 1)) {
                 cardIter = 0;
             }
-
             // If five or more consecutive cards have been found
-            if (cardIter >= 5) {
+            if (cardIter >= 4) {
                 handValue = new ArrayList<>();
                 // If last card was an ace, and there are 5 suited cards the hand is a royal flush
                 if (nrsOfASuitList.contains(5) || nrsOfASuitList.contains(6) || nrsOfASuitList.contains(7)) {
                     if (ranksList.indexOf(cards[i][0]) == 12) {
-//                        System.out.println("Royal Flush");
+                        // Royal Flush
                         handScore = 9;
                     } else {
-//                        System.out.println("Straight Flush");
+                        // Straight Flush
                         handScore = 8;
                         handValue=getFlushHighCards(nrsOfASuitList, cards);
                     }
                 } else {
-//                    System.out.println("Straight");
+                    // Straight
                     handScore = 4;
                     if (handValue.isEmpty()) {
                         handValue.add(ranksList.indexOf(cards[i][0]));
@@ -197,7 +197,7 @@ class HandScorer {
                 }
             } else {
                 if (cardIter <= 4 && (nrsOfASuitList.contains(5) || nrsOfASuitList.contains(6) || nrsOfASuitList.contains(7))) {
-//                    System.out.println("Flush");
+                    // Flush
                     handScore = 5;
                     handValue=getFlushHighCards(nrsOfASuitList, cards);
                 }
@@ -207,6 +207,7 @@ class HandScorer {
 
         // In case no hands are made, the five highest cards make up the hand
         if (handScore == 0) {
+            // High Card
             for (int i = cardLen - 1; i >= cardLen - 5; i--) {
                 handValue.add(ranksList.indexOf(cards[i][0]));
             }
