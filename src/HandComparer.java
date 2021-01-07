@@ -1,7 +1,4 @@
-import javax.swing.*;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class HandComparer {
@@ -12,23 +9,18 @@ public class HandComparer {
 
     public List<Integer[]> compareHands(List<List<Integer>> scores) {
 
-//        for (String[][] hand : hands) {
-//            List<Integer> score = handScorer.calculateHand(hand);
-//            scores.add(score);
-//        }
-
         List<Integer[]> highScoreOrder = new ArrayList<>();
         List<Integer> playerIndexes = new ArrayList<>();
         for (int i = 0; i < scores.size(); i++) {
             playerIndexes.add(i);
         }
 
-        highScoreOrder = this.recursiveMethod(scores, playerIndexes, highScoreOrder);
+        highScoreOrder = this.calculateScoreOrder(scores, playerIndexes, highScoreOrder);
 
         return highScoreOrder;
     }
 
-    public List<Integer[]> recursiveMethod(List<List<Integer>> scores, List<Integer> playerIndexes, List<Integer[]> scoreOrder) {
+    public List<Integer[]> calculateScoreOrder(List<List<Integer>> scores, List<Integer> playerIndexes, List<Integer[]> scoreOrder) {
         List<Integer> highScorePlayerIndexes = new ArrayList<>();
         List<Integer> lowScorePlayerIndexes = new ArrayList<>();
         Integer[][] comparisons = new Integer[scores.size()][2];
@@ -36,7 +28,6 @@ public class HandComparer {
         List<List<Integer>> lowScoresToCheck = new ArrayList<>();
 
         if (scores.size() > 0 && scores.get(0).size() == 1) {
-//            System.out.println("Score size 1");
             Integer[][] scoresArray = new Integer[playerIndexes.size()][2];
             for (int i = 0; i < playerIndexes.size(); i++) {
                 scoresArray[i][0] = scores.get(i).get(0);
@@ -89,20 +80,15 @@ public class HandComparer {
         }
 
         if (highScorePlayerIndexes.size() == 1) {
-//            System.out.println("Adding HIGH single entry " + highScorePlayerIndexes.get(0));
             scoreOrder.add(new Integer[]{highScorePlayerIndexes.get(0)});
         } else {
-//            System.out.println("Entering HIGH scores recursive method...");
-            recursiveMethod(highScoresToCheck, highScorePlayerIndexes, scoreOrder);
+            calculateScoreOrder(highScoresToCheck, highScorePlayerIndexes, scoreOrder);
         }
         if (lowScorePlayerIndexes.size() == 1) {
-//            System.out.println("Adding LOW single entry " + highScorePlayerIndexes.get(0));
             scoreOrder.add(new Integer[]{lowScorePlayerIndexes.get(0)});
         } else {
-//            System.out.println("Entering LOW scores recursive method...");
-            recursiveMethod(lowScoresToCheck, lowScorePlayerIndexes, scoreOrder);
+            calculateScoreOrder(lowScoresToCheck, lowScorePlayerIndexes, scoreOrder);
         }
-//        System.out.println("Reached end of recursive method!");
         return scoreOrder;
     }
 
