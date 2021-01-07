@@ -189,7 +189,7 @@ class HandScorer {
                 cardIter = 0;
             }
             // If five or more consecutive cards have been found
-            if (cardIter >= 4) {
+            if (cardIter >= 5) {
 
                 handValue = new ArrayList<>();
                 // If last card was an ace, and there are 5 suited cards the hand is a royal flush
