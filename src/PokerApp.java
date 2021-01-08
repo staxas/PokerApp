@@ -19,7 +19,7 @@ class PokerApp {
 
             String[][] playerHoleCards = new String[2][2];
 
-            System.out.print("Player " + j + ": ");
+            System.out.print("Player " + (j+1) + ": ");
             for (int i = 0; i < playerHoleCards.length; i++) {
                 playerHoleCards[i] = deck.remove(0);
                 System.out.print(PrintColored.printCardColors(playerHoleCards[i]) + " ");
@@ -57,7 +57,7 @@ class PokerApp {
 
         int i = 0;
         for (List<Integer> score : scores) {
-            System.out.println("Player " + i + " has " + getScoreCards(score));
+            System.out.println("Player " + (i+1) + " has " + getScoreCards(score));
             i++;
         }
 
@@ -67,7 +67,7 @@ class PokerApp {
         for (Integer[] highScores : highScoreOrder) {
             System.out.print("Place " + playerIndex + ":[ ");
             for (Integer highScore : highScores) {
-                System.out.print(highScore + " ");
+                System.out.print((highScore + 1) + " ");
             }
             playerIndex++;
             System.out.print("] ");
@@ -81,7 +81,7 @@ class PokerApp {
         switch (score.get(0)) {
             // High Card
             case 0:{
-                str += getCardName(deckOfCards.RANKS[score.get(1)])+ " ";
+                str += getCardName(deckOfCards.RANKS[score.get(1)])+ " high ";
                 str += "( ";
                 for (int i = 2; i < score.size(); i++) {
                     str += getCardName(deckOfCards.RANKS[score.get(i)]) + " ";
