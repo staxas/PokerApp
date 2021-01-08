@@ -57,8 +57,11 @@ class HandScorer {
         // Pre-check for pair(s), sets and full houses
         List<Integer> pairCards = new ArrayList<>();
         List<Integer> setCards = new ArrayList<>();
+        int quadCards = -1;
         int nrOfPairs = 0;
         int nrOfSets = 0;
+        int nrOfQuads = 0;
+        boolean isQuads=false;
         for (int i = 0; i < nrsOfARank.length; i++) {
             if (nrsOfARank[i] == 2) {
                 nrOfPairs++;
@@ -67,6 +70,10 @@ class HandScorer {
             if (nrsOfARank[i] == 3) {
                 nrOfSets++;
                 setCards.add(i);
+            }
+            if (nrsOfARank[i] == 4) {
+                isQuads=true;
+                quadCards=i;
             }
         }
 
@@ -138,13 +145,14 @@ class HandScorer {
         }
 
         // Check for quads
-        if (nrsOfARankList.contains(4)) {
+        if (isQuads) {
             // Four Of A Kind
             handScore = 7;
+            handValue.add(quadCards);
             int j = 0;
             for (int i = cardLen - 1; i >= 0; i--) {
-                if (handValue.get(0) != ranksList.indexOf(cards[i]) && handValue.get(1) != ranksList.indexOf(cards[i])) {
-                    handValue.add(ranksList.indexOf(cards[i]));
+                if (handValue.get(0) != ranksList.indexOf(cards[i][0])) {
+                    handValue.add(ranksList.indexOf(cards[i][0]));
                     j++;
                 }
                 if (j >= 1) {

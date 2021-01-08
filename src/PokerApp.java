@@ -6,6 +6,8 @@ class PokerApp {
     static HandScorer handScorer = new HandScorer();
     static HandComparer handComparer = new HandComparer();
 
+    static String[] possibleHands = new String[]{"High Card", "One Pair", "Two Pair", "Three Of A Kind", "Straight", "Flush", "Full House", "Four Of A Kind", "Straight Flush", "Royal Flush"};
+
     public static void main(String[] args) {
 
         List<String[]> deck = deckOfCards.getShuffledDeck();
@@ -55,21 +57,22 @@ class PokerApp {
             scores.add(score);
         }
 
-        int i=0;
-        for(List<Integer> score : scores) {
-            System.out.print("Player " + i + " score: ");
+        int i = 0;
+        for (List<Integer> score : scores) {
+            System.out.print("Player " + i + " score: " + possibleHands[score.get(0)] + ", ");
             for (int singleScore : score) {
                 System.out.print(singleScore + " ");
             }
             System.out.println();
             i++;
         }
+        System.out.println();
 
         List<Integer[]> highScoreOrder = handComparer.compareHands(scores);
 
-        int playerIndex=1;
+        int playerIndex = 1;
         for (Integer[] highScores : highScoreOrder) {
-            System.out.print("Place " + playerIndex+":[ ");
+            System.out.print("Place " + playerIndex + ":[ ");
             for (Integer highScore : highScores) {
                 System.out.print(highScore + " ");
             }
