@@ -79,8 +79,17 @@ class PokerApp {
 
         String str = possibleHands[score.get(0)] + ": ";
         switch (score.get(0)) {
-            // High Card, One Pair, Three Of A Kind, Four Of A Kind
-            case 0:
+            // High Card
+            case 0:{
+                str += getCardName(deckOfCards.RANKS[score.get(1)])+ " ";
+                str += "( ";
+                for (int i = 2; i < score.size(); i++) {
+                    str += getCardName(deckOfCards.RANKS[score.get(i)]) + " ";
+                }
+                str += ")";
+                break;
+            }
+            // One Pair, Three Of A Kind, Four Of A Kind
             case 1:
             case 3:
             case 7: {
