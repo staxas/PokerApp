@@ -57,7 +57,7 @@ class PokerApp {
 
         int i = 0;
         for (List<Integer> score : scores) {
-            System.out.println("Player " + i + " score: " + getScoreCards(score));
+            System.out.println("Player " + i + " has " + getScoreCards(score));
             i++;
         }
 

@@ -83,6 +83,7 @@ class HandScorer {
         if (nrOfPairs == 1 && nrOfSets <= 0) {
             // One Pair
             handScore = 1;
+            handValue = new ArrayList<>();
             handValue.add(pairCards.get(0));
             int j = 1;
             for (int i = cardLen - 1; i >= 0; i--) {
@@ -98,6 +99,7 @@ class HandScorer {
         if (nrOfPairs >= 2 && nrOfSets <= 0) {
             // Two Pair
             handScore = 2;
+            handValue = new ArrayList<>();
             handValue.add(pairCards.get(0));
             handValue.add(pairCards.get(1));
             int j = 0;
@@ -116,6 +118,7 @@ class HandScorer {
         if (nrOfSets == 1 && nrOfPairs == 0) {
             // Three Of A Kind
             handScore = 3;
+            handValue = new ArrayList<>();
             handValue.add(setCards.get(0));
             int j = 0;
             for (int i = cardLen - 1; i >= 0; i--) {
@@ -130,15 +133,17 @@ class HandScorer {
             }
         }
 
-        if (nrOfSets == 1 && nrOfPairs == 1) {
+        if (nrOfSets == 1 && nrOfPairs >= 1) {
             // Full House
             handScore = 6;
+            handValue = new ArrayList<>();
             handValue.add(setCards.get(0));
             handValue.add(pairCards.get(0));
         }
         if (nrOfSets == 2) {
             // Full House
             handScore = 6;
+            handValue = new ArrayList<>();
             Collections.sort(setCards, Collections.reverseOrder());
             handValue.add(setCards.get(0));
             handValue.add(setCards.get(1));
@@ -148,6 +153,7 @@ class HandScorer {
         if (isQuads) {
             // Four Of A Kind
             handScore = 7;
+            handValue = new ArrayList<>();
             handValue.add(quadCards);
             int j = 0;
             for (int i = cardLen - 1; i >= 0; i--) {
@@ -221,7 +227,9 @@ class HandScorer {
                     // Straight
                     handScore = 4;
                     int k=0;
-                    Collections.reverse(straightCards);
+                    if(straightCards.get(0) < straightCards.get(straightCards.size()-1)) {
+                        Collections.reverse(straightCards);
+                    }
                     for(Integer straightCard : straightCards) {
                         handValue.add(straightCard);
                         if(k==6) {
