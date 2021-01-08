@@ -1,12 +1,10 @@
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 
 class PokerApp {
     static DeckOfCards deckOfCards = new DeckOfCards();
     static HandScorer handScorer = new HandScorer();
     static HandComparer handComparer = new HandComparer();
 
-    static String[] possibleHands = new String[]{"High Card", "One Pair", "Two Pair", "Three Of A Kind", "Straight", "Flush", "Full House", "Four Of A Kind", "Straight Flush", "Royal Flush"};
 
     public static void main(String[] args) {
 
@@ -59,14 +57,9 @@ class PokerApp {
 
         int i = 0;
         for (List<Integer> score : scores) {
-            System.out.print("Player " + i + " score: " + possibleHands[score.get(0)] + ", ");
-            for (int singleScore : score) {
-                System.out.print(singleScore + " ");
-            }
-            System.out.println();
+            System.out.println("Player " + i + " score: " + getScoreCards(score));
             i++;
         }
-        System.out.println();
 
         List<Integer[]> highScoreOrder = handComparer.compareHands(scores);
 
@@ -79,5 +72,72 @@ class PokerApp {
             playerIndex++;
             System.out.print("] ");
         }
+    }
+
+    public static String getScoreCards(List<Integer> score) {
+        String[] possibleHands = new String[]{"High Card", "One Pair", "Two Pair", "Three Of A Kind", "Straight", "Flush", "Full House", "Four Of A Kind", "Straight Flush", "Royal Flush"};
+
+        String str = possibleHands[score.get(0)] + ": ";
+        switch (score.get(0)) {
+            // High Card, One Pair, Three Of A Kind, Four Of A Kind
+            case 0:
+            case 1:
+            case 3:
+            case 7: {
+                str += getCardName(deckOfCards.RANKS[score.get(1)])+ "s ";
+                str += "( ";
+                for (int i = 2; i < score.size(); i++) {
+                    str += getCardName(deckOfCards.RANKS[score.get(i)]) + " ";
+                }
+                str += ")";
+                break;
+            }
+            // Two pair
+            case 2: {
+                str += getCardName(deckOfCards.RANKS[score.get(1)]) + "s & ";
+                str += getCardName(deckOfCards.RANKS[score.get(2)]) + "s ";
+                str += "( ";
+                for (int i = 3; i < score.size(); i++) {
+                    str += getCardName(deckOfCards.RANKS[score.get(i)]) + " ";
+                }
+                str += ")";
+                break;
+            }
+            // Full House
+            case 6: {
+                str += getCardName(deckOfCards.RANKS[score.get(1)]) + "s over ";
+                str += getCardName(deckOfCards.RANKS[score.get(2)]) + "s ";
+                break;
+            }
+            // Straight, Flush, Four Of A Kind, Straight Flush, Royal Flush
+            case 4:
+            case 5:
+            case 8:
+            case 9: {
+                str += getCardName(deckOfCards.RANKS[score.get(1)])+ " high ";
+                str += "( ";
+                for (int i = 2; i < score.size(); i++) {
+                    str += getCardName(deckOfCards.RANKS[score.get(i)]) + " ";
+                }
+                str += ")";
+                break;
+            }
+
+        }
+        return str;
+    }
+    public static String getCardName(String cardId) {
+        String cardName=cardId;
+        Map<String, String> cardNames  = new HashMap<String, String>() {{
+            put("2", "deuce");
+            put("j", "jack");
+            put("q", "queen");
+            put("k", "king");
+            put("a", "ace");
+        }};
+        if(cardNames.containsKey(cardId)) {
+            cardName=cardNames.get(cardId);
+        }
+        return cardName;
     }
 }

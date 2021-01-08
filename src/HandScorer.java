@@ -168,7 +168,11 @@ class HandScorer {
             handValue = getFlushHighCards(nrsOfASuitList, cards);
         }
 
+        List<Integer> straightCards = new ArrayList<>();
+
         String[] lastCard = cards[0];
+        straightCards.add(ranksList.indexOf(lastCard[0]));
+
         int cardIter = 1;
 
         int startingIndex = 1;
@@ -187,6 +191,7 @@ class HandScorer {
 
             if (ranksList.indexOf(cards[i][0]) == (ranksList.indexOf(lastCard[0]) + 1)) {
                 cardIter++;
+                straightCards.add(ranksList.indexOf(cards[i][0]));
                 suitsForStraightFlush[suitsList.indexOf(cards[i][1])]++;
              }
             if (ranksList.indexOf(cards[i][0]) == (ranksList.indexOf(lastCard[0]))) {
@@ -206,6 +211,7 @@ class HandScorer {
                     if (ranksList.indexOf(cards[i][0]) == 12) {
                         // Royal Flush
                         handScore = 9;
+                        handValue = getFlushHighCards(nrsOfASuitList, cards);
                     } else {
                         // Straight Flush
                         handScore = 8;
@@ -214,10 +220,14 @@ class HandScorer {
                 } else {
                     // Straight
                     handScore = 4;
-                    if (handValue.isEmpty()) {
-                        handValue.add(ranksList.indexOf(cards[i][0]));
-                    } else {
-                        handValue.set(0, ranksList.indexOf(cards[i][0]));
+                    int k=0;
+                    Collections.reverse(straightCards);
+                    for(Integer straightCard : straightCards) {
+                        handValue.add(straightCard);
+                        if(k==6) {
+                            break;
+                        }
+                        k++;
                     }
                 }
             }
