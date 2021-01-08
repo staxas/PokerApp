@@ -61,7 +61,7 @@ class HandScorer {
         int nrOfPairs = 0;
         int nrOfSets = 0;
         int nrOfQuads = 0;
-        boolean isQuads=false;
+        boolean isQuads = false;
         for (int i = 0; i < nrsOfARank.length; i++) {
             if (nrsOfARank[i] == 2) {
                 nrOfPairs++;
@@ -72,8 +72,8 @@ class HandScorer {
                 setCards.add(i);
             }
             if (nrsOfARank[i] == 4) {
-                isQuads=true;
-                quadCards=i;
+                isQuads = true;
+                quadCards = i;
             }
         }
 
@@ -199,10 +199,10 @@ class HandScorer {
                 cardIter++;
                 straightCards.add(ranksList.indexOf(cards[i][0]));
                 suitsForStraightFlush[suitsList.indexOf(cards[i][1])]++;
-             }
+            }
             if (ranksList.indexOf(cards[i][0]) == (ranksList.indexOf(lastCard[0]))) {
                 suitsForStraightFlush[suitsList.indexOf(cards[i][1])]++;
-             }
+            }
             // of the previous card is not the same as the current card, and no iterating card is found, reset counter
             if (ranksList.indexOf(cards[i][0]) != (ranksList.indexOf(lastCard[0])) && ranksList.indexOf(cards[i][0]) != (ranksList.indexOf(lastCard[0]) + 1)) {
                 cardIter = 0;
@@ -226,13 +226,12 @@ class HandScorer {
                 } else {
                     // Straight
                     handScore = 4;
-                    int k=0;
-                    if(straightCards.get(0) < straightCards.get(straightCards.size()-1)) {
-                        Collections.reverse(straightCards);
-                    }
-                    for(Integer straightCard : straightCards) {
+                    int k = 0;
+                    Collections.sort(straightCards);
+                    Collections.reverse(straightCards);
+                    for (Integer straightCard : straightCards) {
                         handValue.add(straightCard);
-                        if(k==6) {
+                        if (k == 4) {
                             break;
                         }
                         k++;
