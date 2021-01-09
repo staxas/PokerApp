@@ -77,11 +77,12 @@ class PokerApp {
     public static String getScoreCards(List<Integer> score) {
         String[] possibleHands = new String[]{"High Card", "One Pair", "Two Pair", "Three Of A Kind", "Straight", "Flush", "Full House", "Four Of A Kind", "Straight Flush", "Royal Flush"};
 
-        String str = possibleHands[score.get(0)] + ": ";
+        String str = possibleHands[score.get(0)];
         switch (score.get(0)) {
-            // High Card
-            case 0:{
-                str += getCardName(deckOfCards.RANKS[score.get(1)])+ " high ";
+            // High Card, Flush
+            case 0:
+            case 5: {
+                str +=  ": " + getCardName(deckOfCards.RANKS[score.get(1)])+ " high ";
                 str += "( ";
                 for (int i = 2; i < score.size(); i++) {
                     str += getCardName(deckOfCards.RANKS[score.get(i)]) + " ";
@@ -93,7 +94,7 @@ class PokerApp {
             case 1:
             case 3:
             case 7: {
-                str += getCardName(deckOfCards.RANKS[score.get(1)])+ "s ";
+                str += ": " + getCardName(deckOfCards.RANKS[score.get(1)])+ "s ";
                 str += "( ";
                 for (int i = 2; i < score.size(); i++) {
                     str += getCardName(deckOfCards.RANKS[score.get(i)]) + " ";
@@ -103,7 +104,7 @@ class PokerApp {
             }
             // Two pair
             case 2: {
-                str += getCardName(deckOfCards.RANKS[score.get(1)]) + "s & ";
+                str += ": " + getCardName(deckOfCards.RANKS[score.get(1)]) + "s & ";
                 str += getCardName(deckOfCards.RANKS[score.get(2)]) + "s ";
                 str += "( ";
                 for (int i = 3; i < score.size(); i++) {
@@ -114,23 +115,24 @@ class PokerApp {
             }
             // Full House
             case 6: {
-                str += getCardName(deckOfCards.RANKS[score.get(1)]) + "s over ";
+                str += ": " + getCardName(deckOfCards.RANKS[score.get(1)]) + "s over ";
                 str += getCardName(deckOfCards.RANKS[score.get(2)]) + "s ";
                 break;
             }
-            // Straight, Flush, Four Of A Kind, Straight Flush, Royal Flush
+            // Straight, Straight Flush
             case 4:
-            case 5:
-            case 8:
-            case 9: {
-                str += getCardName(deckOfCards.RANKS[score.get(1)])+ " high ";
-                str += "( ";
-                for (int i = 2; i < score.size(); i++) {
-                    str += getCardName(deckOfCards.RANKS[score.get(i)]) + " ";
-                }
-                str += ")";
+            case 8: {
+                str += ": " + getCardName(deckOfCards.RANKS[score.get(1)])+ " high ";
+//                str += "( ";
+//                for (int i = 2; i < score.size(); i++) {
+//                    str += getCardName(deckOfCards.RANKS[score.get(i)]) + " ";
+//                }
+//                str += ")";
                 break;
             }
+            // Royal Flush
+            case 9:
+                break;
 
         }
         return str;
