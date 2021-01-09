@@ -123,11 +123,6 @@ class PokerApp {
             case 4:
             case 8: {
                 str += ": " + getCardName(deckOfCards.RANKS[score.get(1)])+ " high ";
-//                str += "( ";
-//                for (int i = 2; i < score.size(); i++) {
-//                    str += getCardName(deckOfCards.RANKS[score.get(i)]) + " ";
-//                }
-//                str += ")";
                 break;
             }
             // Royal Flush
