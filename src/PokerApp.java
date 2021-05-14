@@ -8,16 +8,16 @@ class PokerApp {
 
     public static void main(String[] args) {
 
-        List<String[]> deck = deckOfCards.getShuffledDeck();
+        List<Card> deck = deckOfCards.getShuffledDeck();
         int nrOfPlayers = 5;
-        List<String[][]> playersHoleCards = new ArrayList<>();
-        List<String[][]> playersHands = new ArrayList<>();
+        List<Card[]> playersHoleCards = new ArrayList<>();
+        List<Card[]> playersHands = new ArrayList<>();
 
         // Generate hands
         for (int j = 0; j < nrOfPlayers; j++) {
-            String[][] playerHand = new String[7][2];
+            Card[] playerHand = new Card[7];
 
-            String[][] playerHoleCards = new String[2][2];
+            Card[] playerHoleCards = new Card[2];
 
             System.out.print("Player " + (j+1) + ": ");
             for (int i = 0; i < playerHoleCards.length; i++) {
@@ -29,7 +29,7 @@ class PokerApp {
             System.out.println();
         }
 
-        String[][] table = new String[5][2];
+        Card[] table = new Card[5];
 
         for (int i = 0; i < table.length; i++) {
             table[i] = deck.remove(0);
@@ -37,8 +37,8 @@ class PokerApp {
         }
         System.out.println();
 
-        for (String[][] playerHoleCards : playersHoleCards) {
-            String[][] playerHand = new String[7][2];
+        for (Card[] playerHoleCards : playersHoleCards) {
+            Card[] playerHand = new Card[7];
             for (int j = 0; j < playerHoleCards.length; j++) {
                 playerHand[j] = playerHoleCards[j];
             }
@@ -50,7 +50,7 @@ class PokerApp {
 
         List<List<Integer>> scores = new ArrayList<>();
 
-        for (String[][] hand : playersHands) {
+        for (Card[] hand : playersHands) {
             List<Integer> score = handScorer.calculateHand(hand);
             scores.add(score);
         }

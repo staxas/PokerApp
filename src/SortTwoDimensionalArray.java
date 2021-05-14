@@ -6,24 +6,23 @@ public class SortTwoDimensionalArray {
 
     List<String> ranksList = Arrays.asList(deckOfCards.RANKS);
 
-    private int partitionCards(String[][] arr, int low, int high) {
+    private int partitionCards(Card[] arr, int low, int high) {
         // pivot (Element to be placed at right position)
-        int pivot = ranksList.indexOf(arr[high][0]);
+        int pivot = ranksList.indexOf(arr[high].getRank());
 
         int i = (low - 1); // Index of smaller element
 
         for (int j = low; j <= high - 1; j++) {
             // If current element is smaller than the pivot
-            if (ranksList.indexOf(arr[j][0]) < pivot) {
+            if (ranksList.indexOf(arr[j].getRank()) < pivot) {
                 i++;    // increment index of smaller element
-                String[] tmpArr = new String[2];
-                tmpArr = arr[i];
+                Card tmpArr = new Card(arr[i]);
                 arr[i] = arr[j];
                 arr[j] = tmpArr;
             }
         }
-        String[] tmpArr = new String[2];
-        tmpArr = arr[i + 1];
+
+        Card tmpArr = new Card(arr[i + 1]);
         arr[i + 1] = arr[high];
         arr[high] = tmpArr;
 
@@ -52,7 +51,7 @@ public class SortTwoDimensionalArray {
 
         return (i + 1);
     }
-    public void quickSortCards(String[][] arr, int low, int high) {
+    public void quickSortCards(Card[] arr, int low, int high) {
         if (low < high) {
         /* pi is partitioning index, arr[pi] is now
            at right place */

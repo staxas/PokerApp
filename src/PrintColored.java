@@ -6,23 +6,26 @@ public class PrintColored {
         public static final String ANSI_RED = "\u001B[31m";
         public static final String ANSI_GREEN = "\u001B[32m";
         public static final String ANSI_BLUE = "\u001B[34m";
-    public static String printCardColors(String[] card) {
+    public static String printCardColors(Card card) {
 //        String cardToPrint = ANSI_GREY_BACKGROUND;
         String cardToPrint = new String();
-        if(card[1]=="h") {
+        String suite = card.getSuite();
+        String rank = card.getRank();
+
+        if(suite=="h") {
             cardToPrint+=ANSI_RED;
         }
-        if(card[1]=="s") {
+        if(suite=="s") {
             cardToPrint+=ANSI_BLACK;
         }
-        if(card[1]=="c") {
+        if(suite=="c") {
             cardToPrint+=ANSI_GREEN;
         }
-        if(card[1]=="d") {
+        if(suite=="d") {
             cardToPrint+=ANSI_BLUE;
         }
-        cardToPrint+=card[0];
-        cardToPrint+=card[1];
+        cardToPrint+=suite;
+        cardToPrint+=rank;
         cardToPrint+=ANSI_RESET;
         return cardToPrint;
 
